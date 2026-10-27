@@ -1,0 +1,69 @@
+@baseUrl = http://localhost:8084/proptech-propi
+@facturaId = 1
+@clienteId = 1
+
+### Listar facturas
+GET {{baseUrl}}/api/facturas
+
+### Obtener factura por id
+GET {{baseUrl}}/api/facturas/{{facturaId}}
+
+### Crear factura
+POST {{baseUrl}}/api/facturas
+Content-Type: application/json
+
+{
+  "cliente": {
+    "idCliente": {{clienteId}}
+  },
+  "fechaFactura": "2026-10-26T19:00:00",
+  "condicionVenta": "CONTADO",
+  "medioPago": "EFECTIVO",
+  "moneda": "CRC",
+  "tipoCambio": 1.0000,
+  "observaciones": "Factura de prueba",
+  "subtotal": 10000.00,
+  "totalImpuestos": 1300.00,
+  "montoTotal": 11300.00
+}
+
+### Crear factura mediante procedimiento
+POST {{baseUrl}}/api/facturas/insertarFactura
+Content-Type: application/json
+
+{
+  "cliente": {
+    "idCliente": {{clienteId}}
+  },
+  "fechaFactura": "2026-10-26T19:00:00",
+  "condicionVenta": "CONTADO",
+  "medioPago": "TARJETA",
+  "moneda": "CRC",
+  "tipoCambio": 1.0000,
+  "observaciones": "Factura por procedimiento",
+  "subtotal": 10000.00,
+  "totalImpuestos": 1300.00,
+  "montoTotal": 11300.00
+}
+
+### Actualizar factura
+PUT {{baseUrl}}/api/facturas/{{facturaId}}
+Content-Type: application/json
+
+{
+  "cliente": {
+    "idCliente": {{clienteId}}
+  },
+  "fechaFactura": "2026-10-26T19:00:00",
+  "condicionVenta": "CREDITO",
+  "medioPago": "TRANSFERENCIA",
+  "moneda": "CRC",
+  "tipoCambio": 1.0000,
+  "observaciones": "Factura actualizada",
+  "subtotal": 12000.00,
+  "totalImpuestos": 1560.00,
+  "montoTotal": 13560.00
+}
+
+### Eliminar factura
+DELETE {{baseUrl}}/api/facturas/{{facturaId}}

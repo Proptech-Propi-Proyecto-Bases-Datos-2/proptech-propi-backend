@@ -1,7 +1,10 @@
 package cr.ac.ucr.paraiso.proptech.propi.backend.dto;
 
+import java.time.LocalDateTime;
+
 public class ClienteDTO {
 
+    private int idCliente;
     private String nombre;
     private String numIdentificacion;
     private String tipoIdentificacion;
@@ -13,6 +16,8 @@ public class ClienteDTO {
     private String actividadEconomica;
     private String correoElectronico;
     private String telefono;
+    private LocalDateTime fechaRegistro;
+    private String estado;
 
     public ClienteDTO() {
     }
@@ -119,6 +124,30 @@ public class ClienteDTO {
 
     public String getTelefono() {
         return telefono;
+    }
+
+    public void setFechaRegistro(LocalDateTime fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+
+    public LocalDateTime getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public int getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
 }
 

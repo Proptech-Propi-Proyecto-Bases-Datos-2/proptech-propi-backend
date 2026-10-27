@@ -1,7 +1,10 @@
 package cr.ac.ucr.paraiso.proptech.propi.backend.controller;
 
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cr.ac.ucr.paraiso.proptech.propi.backend.dto.ClienteDTO;
@@ -29,48 +33,161 @@ public class ClientesRestController {
         this.clientesService = clientesService;
     }
 
-    @PostMapping("/clientes")
-    public ResponseEntity<String> insertarCliente(
-            @RequestBody ClienteDTO cliente) {
+    @PostMapping("/insertarCliente")
+    public ResponseEntity<?> insertarCliente(@RequestBody ClienteDTO cliente) {
 
-        clientesService.insertarCliente(cliente);
+        try {
+            int clienteId = clientesService.insertarCliente(cliente);
+            ClienteDTO clienteInsertado = clientesService.findById(clienteId);
 
-        return ResponseEntity.ok(cliente.getNombre() + " - insertado correctamente");
+            if (clienteInsertado == null) {
+                return ResponseEntity.status(500).body("Error al insertar el cliente");
+            }
+
+            return ResponseEntity.ok(Map.of(
+                "mensaje", "Cliente insertado correctamente",
+                "cliente", "ID:" + clienteInsertado.getIdCliente() + " - Nombre: " + clienteInsertado.getNombre()
+            ));
+
+        } catch (DataAccessException e) {
+            // Aquí cae la excepción cuando el Login de SQL Server no tiene permisos (DENY / REVOKE)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                "error", "Acceso Denegado",
+                "detalle", "El usuario de base de datos no tiene permisos para realizar esta operación."
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "error", "Error interno",
+                "detalle", e.getMessage()
+            ));
+        }
     }
 
-    @GetMapping()//devuelve todos los clientes
-    public ResponseEntity<List<Clientes>> getAllClientes() {
-        List<Clientes> clientes = clientesService.findAll();
-        return ResponseEntity.ok(clientes);
+    
+    @GetMapping("/cifrados")
+    public ResponseEntity<?> listarClientesCifrados() {
+        try {
+            List<Clientes> clientes = clientesService.findAll();
+            return ResponseEntity.ok(clientes);
+        } catch (DataAccessException e) {
+            // Aquí cae la excepción cuando el Login de SQL Server no tiene permisos (DENY / REVOKE)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                "error", "Acceso Denegado",
+                "detalle", "El usuario de base de datos no tiene permisos para realizar esta operación."
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                        "error", "Error al consultar los clientes descifrados",
+                        "detalle", e.getMessage()
+                    ));
+        }
+    }
+
+
+    // Endpoint GET: /api/clientes O /api/clientes?estado=A
+    @GetMapping
+    public ResponseEntity<?> listarClientes(@RequestParam(required = false) String estado) {
+        try {
+            List<ClienteDTO> clientes = clientesService.obtenerClientes(estado);
+            return ResponseEntity.ok(clientes);
+        } catch (DataAccessException e) {
+            // Aquí cae la excepción cuando el Login de SQL Server no tiene permisos (DENY / REVOKE)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                "error", "Acceso Denegado",
+                "detalle", "El usuario de base de datos no tiene permisos para realizar esta operación."
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                        "error", "Error al consultar los clientes descifrados",
+                        "detalle", e.getMessage()
+                    ));
+        }
     }
 
     @GetMapping("/id/{id}")//devuelve una coincidencia de cliente por id
-    public ResponseEntity<Clientes> getClienteById(@PathVariable int id) {
-        Clientes cliente = clientesService.findById(id);
-        if (cliente == null) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> getClienteById(@PathVariable int id) {
+        try {
+            ClienteDTO cliente = clientesService.findById(id);
+            
+            if (cliente == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("mensaje", "Cliente no encontrado con el ID: " + id));
+            }
+            
+            return ResponseEntity.ok(cliente);
+        } catch (DataAccessException e) {
+            // Aquí cae la excepción cuando el Login de SQL Server no tiene permisos (DENY / REVOKE)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                "error", "Acceso Denegado",
+                "detalle", "El usuario de base de datos no tiene permisos para realizar esta operación."
+            ));    
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                        "error", "Error al consultar el cliente descifrado",
+                        "detalle", e.getMessage()
+                    ));
         }
-        return ResponseEntity.ok(cliente);
     }
 
     @PutMapping("/id/{id}")
-    public ResponseEntity<Clientes> updateCliente(@PathVariable int id, @RequestBody Clientes cliente) {
-        Clientes updated = clientesService.update(id, cliente);
-        if (updated == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<?> updateCliente(@PathVariable int id, @RequestBody ClienteDTO cliente) {
+
+        try {
+            ClienteDTO updated = clientesService.update(id, cliente);
+            if (updated == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("mensaje", "Cliente no encontrado con el ID: " + id));
+            }
+            return ResponseEntity.ok(Map.of(
+                "mensaje", "Cliente actualizado correctamente",
+                "cliente", "ID:" + updated.getIdCliente() + " - Nombre: " + updated.getNombre()
+            ));
+        } catch (DataAccessException e) {
+            // Aquí cae la excepción cuando el Login de SQL Server no tiene permisos (DENY / REVOKE)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                "error", "Acceso Denegado",
+                "detalle", "El usuario de base de datos no tiene permisos para realizar esta operación."
+            ));    
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                        "error", "Error al actualizar el cliente descifrado",
+                        "detalle", e.getMessage()
+                    ));
+        }    
+        
     }
 
-    @DeleteMapping("/code/{id}")//devuelve un mensaje de éxito o error al eliminar el cliente
-    public ResponseEntity<String> deleteResearchProject(@PathVariable String code) {
-        Clientes cliente = clientesService.findById(Integer.parseInt(code));
-        if(cliente == null) {
-            return ResponseEntity.status(500).body("Failed to delete the research project");
-        }
+    @DeleteMapping("/id/{id}")//devuelve un mensaje de éxito o error al eliminar el cliente
+    public ResponseEntity<?> deleteCliente(@PathVariable int id) {
 
-        clientesService.delete(cliente);
-        return ResponseEntity.ok("Research project deleted successfully");
+        try {
+            ClienteDTO cliente = clientesService.findById(id);
+            if(cliente == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("mensaje", "Cliente no encontrado con el ID: " + id));
+            }
+
+            clientesService.deleteById(cliente.getIdCliente());
+            return ResponseEntity.ok(Map.of(
+                "mensaje", "Cliente eliminado correctamente",
+                "cliente", "ID:" + cliente.getIdCliente() + " - Nombre: " + cliente.getNombre()
+            ));
+        } catch (DataAccessException e) {
+            // Aquí cae la excepción cuando el Login de SQL Server no tiene permisos (DENY / REVOKE)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                "error", "Acceso Denegado",
+                "detalle", "El usuario de base de datos no tiene permisos para realizar esta operación."
+            ));    
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of(
+                        "error", "Error al eliminar el cliente descifrado",
+                        "detalle", e.getMessage()
+                    ));
+        }
     }
 
 }
+    

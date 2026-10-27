@@ -1,0 +1,28 @@
+@baseUrl = http://localhost:8084/proptech-propi
+
+### Iniciar sesión admin
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "login_admin",
+  "password": "Admin8071Pass$word123"
+}
+
+### Iniciar sesión digitador
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "login_digitador",
+  "password": "DigiI@tadorPassword123"
+}
+
+### Iniciar sesión consulta
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "login_consulta",
+  "password": "ConsUltaPas$w0rd123"
+}

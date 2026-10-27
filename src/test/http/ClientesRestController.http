@@ -1,0 +1,51 @@
+@baseUrl = http://localhost:8084/proptech-propi
+@clienteId = 1003
+
+### Listar clientes con cifrado que se ven
+GET {{baseUrl}}/api/clientes
+
+### Obtener clientes con cifrado 
+GET {{baseUrl}}/api/clientes/cifrados
+
+
+### Obtener cliente
+GET {{baseUrl}}/api/clientes/id/{{clienteId}}
+
+### Crear cliente mediante procedimiento
+POST {{baseUrl}}/api/clientes/insertarCliente
+Content-Type: application/json
+
+{
+  "nombre": "Cliente de prueba",
+  "numIdentificacion": "123456789",
+  "tipoIdentificacion": "Cédula",
+  "provincia": "Cartago",
+  "canton": "Paraiso",
+  "distrito": "Paraiso",
+  "barrio": "Centro",
+  "profesion": "Profesional",
+  "actividadEconomica": "Servicios",
+  "correoElectronico": "lu@gmail.com",
+  "telefono": "1111-1231"
+}
+
+### Actualizar cliente
+PUT {{baseUrl}}/api/clientes/id/{{clienteId}}
+Content-Type: application/json
+
+{
+  "nombre": "Cliente lUIS siBAJA",
+  "numIdentificacion": "ALyYdpxjcEKy79PKcK6AvQIAAACdXkLfvIJ0900YoAw8LqewYVnNYjiNeRJbipqB/lVNLwd5Y6/QtWf+ILos1RW+zbs=",
+  "tipoIdentificacion": "Cédula",
+  "provincia": "Sanjose",
+  "canton": "Curridal",
+  "distrito": "Curridal",
+  "barrio": "Centro",
+  "profesion": "Camionero",
+  "actividadEconomica": "Servicios",
+  "correoElectronico": "ALyYdpxjcEKy79PKcK6AvQIAAAAgnQnZo4o5ZQ8gU/mL4MMdipiiflHCu5UBL9v6aSwI2R2/xSj++8Bi1H9z+53vlZ4=",
+  "telefono": "ALyYdpxjcEKy79PKcK6AvQIAAADt7PxpKp0W3I7hawx4gyF/qrEWyXZEwVu3hFqlSF+a1R78b6+WboczEIpXtS9KHgY="
+}
+
+### Eliminar cliente
+DELETE {{baseUrl}}/api/clientes/id/{{clienteId}}

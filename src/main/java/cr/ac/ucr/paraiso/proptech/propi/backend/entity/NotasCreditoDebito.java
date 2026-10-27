@@ -39,6 +39,7 @@ public class NotasCreditoDebito {
     public void setFactura(Facturas factura) { this.factura = factura; }
 
     public LocalDateTime getFecha() { return fecha; }
+    public void setFecha(LocalDateTime fecha) { this.fecha = fecha; }
 
     public String getTipo() { return tipo; }
     public void setTipo(String tipo) { this.tipo = tipo; }

@@ -1,0 +1,57 @@
+@baseUrl = http://localhost:8084/proptech-propi
+@productoId = 1
+@impuestoId = 1
+
+### Listar productos y servicios
+GET {{baseUrl}}/api/productos-servicios
+
+### Obtener producto o servicio por id
+GET {{baseUrl}}/api/productos-servicios/{{productoId}}
+
+### Crear producto o servicio
+POST {{baseUrl}}/api/productos-servicios
+Content-Type: application/json
+
+{
+  "codCabys": "1234567890123",
+  "tipoImpuesto": {
+    "idImpuesto": {{impuestoId}}
+  },
+  "descripcion": "Servicio de prueba",
+  "unidadMedida": "Unidad",
+  "precio": 10000.00,
+  "estado": "ACTIVO"
+}
+
+### Crear producto o servicio mediante procedimiento
+POST {{baseUrl}}/api/productos-servicios/insertarProducto
+Content-Type: application/json
+
+{
+  "codCabys": "1234567890123",
+  "tipoImpuesto": {
+    "idImpuesto": {{impuestoId}}
+  },
+  "descripcion": "Producto por procedimiento",
+  "unidadMedida": "Unidad",
+  "precio": 15000.00,
+  "estado": "ACTIVO"
+}
+
+### Actualizar producto o servicio
+PUT {{baseUrl}}/api/productos-servicios/{{productoId}}
+Content-Type: application/json
+
+{
+  "codCabys": "1234567890123",
+  "tipoImpuesto": {
+    "idImpuesto": {{impuestoId}}
+  },
+  "descripcion": "Servicio actualizado",
+  "unidadMedida": "Unidad",
+  "precio": 12000.00,
+  "estado": "ACTIVO"
+}
+
+### Eliminar producto o servicio
+DELETE {{baseUrl}}/api/productos-servicios/{{productoId}}

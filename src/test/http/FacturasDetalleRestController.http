@@ -1,0 +1,58 @@
+@baseUrl = http://localhost:8084/proptech-propi
+@detalleId = 1
+@facturaId = 1
+@productoId = 1
+
+### Listar detalles de factura
+GET {{baseUrl}}/api/facturas-detalle
+
+### Obtener detalle por id
+GET {{baseUrl}}/api/facturas-detalle/{{detalleId}}
+
+### Crear detalle
+POST {{baseUrl}}/api/facturas-detalle
+Content-Type: application/json
+
+{
+  "factura": {
+    "idFactura": {{facturaId}}
+  },
+  "productoServicio": {
+    "idProducto": {{productoId}}
+  },
+  "cantidad": 2,
+  "montoLinea": 22600.00
+}
+
+### Crear detalle mediante procedimiento
+POST {{baseUrl}}/api/facturas-detalle/insertarFacturaDetalle
+Content-Type: application/json
+
+{
+  "factura": {
+    "idFactura": {{facturaId}}
+  },
+  "productoServicio": {
+    "idProducto": {{productoId}}
+  },
+  "cantidad": 1,
+  "montoLinea": 11300.00
+}
+
+### Actualizar detalle
+PUT {{baseUrl}}/api/facturas-detalle/{{detalleId}}
+Content-Type: application/json
+
+{
+  "factura": {
+    "idFactura": {{facturaId}}
+  },
+  "productoServicio": {
+    "idProducto": {{productoId}}
+  },
+  "cantidad": 3,
+  "montoLinea": 33900.00
+}
+
+### Eliminar detalle
+DELETE {{baseUrl}}/api/facturas-detalle/{{detalleId}}

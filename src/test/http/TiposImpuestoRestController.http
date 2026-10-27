@@ -1,0 +1,44 @@
+@baseUrl = http://localhost:8084/proptech-propi
+@impuestoId = 1
+
+### Listar tipos de impuesto
+GET {{baseUrl}}/api/tipos-impuestos
+
+### Obtener tipo de impuesto por id
+GET {{baseUrl}}/api/tipos-impuestos/{{impuestoId}}
+
+### Crear tipo de impuesto
+POST {{baseUrl}}/api/tipos-impuestos
+Content-Type: application/json
+
+{
+  "tarifa": "13",
+  "descripcion": "Impuesto al valor agregado",
+  "porcentaje": 13.00,
+  "estado": "ACTIVO"
+}
+
+### Crear tipo de impuesto mediante procedimiento
+POST {{baseUrl}}/api/tipos-impuestos/insertarTipo
+Content-Type: application/json
+
+{
+  "tarifa": "4",
+  "descripcion": "Tarifa reducida",
+  "porcentaje": 4.00,
+  "estado": "ACTIVO"
+}
+
+### Actualizar tipo de impuesto
+PUT {{baseUrl}}/api/tipos-impuestos/{{impuestoId}}
+Content-Type: application/json
+
+{
+  "tarifa": "13",
+  "descripcion": "IVA actualizado",
+  "porcentaje": 13.00,
+  "estado": "ACTIVO"
+}
+
+### Eliminar tipo de impuesto
+DELETE {{baseUrl}}/api/tipos-impuestos/{{impuestoId}}

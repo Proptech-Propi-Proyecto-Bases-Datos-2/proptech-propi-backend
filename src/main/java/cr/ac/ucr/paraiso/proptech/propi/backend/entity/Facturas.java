@@ -62,6 +62,7 @@ public class Facturas {
     public void setCliente(Clientes cliente) { this.cliente = cliente; }
 
     public LocalDateTime getFechaFactura() { return fechaFactura; }
+    public void setFechaFactura(LocalDateTime fechaFactura) { this.fechaFactura = fechaFactura; }
 
     public String getCondicionVenta() { return condicionVenta; }
     public void setCondicionVenta(String condicionVenta) { this.condicionVenta = condicionVenta; }

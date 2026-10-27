@@ -1,0 +1,55 @@
+@baseUrl = http://localhost:8084/proptech-propi
+@notaId = 1
+@facturaId = 1
+
+### Listar notas de crédito y débito
+GET {{baseUrl}}/api/notas-credito-debito
+
+### Obtener nota por id
+GET {{baseUrl}}/api/notas-credito-debito/{{notaId}}
+
+### Crear nota
+POST {{baseUrl}}/api/notas-credito-debito
+Content-Type: application/json
+
+{
+  "factura": {
+    "idFactura": {{facturaId}}
+  },
+  "fecha": "2026-10-26T19:00:00",
+  "tipo": "CREDITO",
+  "motivo": "Devolución de producto",
+  "montoTotal": 11300.00
+}
+
+### Crear nota mediante procedimiento
+# El controller actual define un espacio al final de esta ruta.
+POST {{baseUrl}}/api/notas-credito-debito/insertarNota%20
+Content-Type: application/json
+
+{
+  "factura": {
+    "idFactura": {{facturaId}}
+  },
+  "fecha": "2026-10-26T19:00:00",
+  "tipo": "DEBITO",
+  "motivo": "Ajuste de monto",
+  "montoTotal": 1000.00
+}
+
+### Actualizar nota
+PUT {{baseUrl}}/api/notas-credito-debito/{{notaId}}
+Content-Type: application/json
+
+{
+  "factura": {
+    "idFactura": {{facturaId}}
+  },
+  "fecha": "2026-10-26T19:00:00",
+  "tipo": "CREDITO",
+  "motivo": "Motivo actualizado",
+  "montoTotal": 9000.00
+}
+
+### Eliminar nota
+DELETE {{baseUrl}}/api/notas-credito-debito/{{notaId}}
