@@ -14,7 +14,7 @@ public class Clientes {
     @Column(name = "id_cliente")
     private int idCliente;
 
-    @Column(name = "nombre")
+    @Column(name = "nombre", nullable = false, length = 150)
     private String nombre;
 
     @Column(name = "num_identificacion", columnDefinition = "VARBINARY(256)")
@@ -23,22 +23,25 @@ public class Clientes {
     @Column(name = "tipo_identificacion")
     private String tipoIdentificacion;
 
-    @Column(name = "provincia")
+    @Column(name = "provincia", nullable = false, length = 40)
     private String provincia;
 
-    @Column(name = "canton")
+    @Column(name = "canton", nullable = false, length = 40)
     private String canton;
 
-    @Column(name = "distrito")
+    @Column(name = "distrito", nullable = false, length = 40)
     private String distrito;
 
-    @Column(name = "barrio")
+    @Column(name = "barrio", nullable = false, length = 40)
     private String barrio;
 
-    @Column(name = "profesion")
+    @Column(name = "direccion_exacta", nullable = false, length = 500)
+    private String direccionExacta = "No especificada";
+
+    @Column(name = "profesion", nullable = false, length = 100)
     private String profesion;
 
-    @Column(name = "actividad_economica")
+    @Column(name = "actividad_economica", nullable = false, length = 100)
     private String actividadEconomica;
 
     @Column(name = "correo_electronico", nullable = false, columnDefinition = "VARBINARY(256)")
@@ -47,10 +50,10 @@ public class Clientes {
     @Column(name = "telefono", nullable = false, columnDefinition = "VARBINARY(256)")
     private byte[] telefono;
 
-    @Column(name = "fecha_registro")
+    @Column(name = "fecha_registro", nullable = false)
     private LocalDateTime fechaRegistro;
 
-    @Column(name = "estado")
+    @Column(name = "estado", nullable = false, length = 1)
     private String estado;
 
     @OneToMany(mappedBy = "cliente")
@@ -82,6 +85,9 @@ public class Clientes {
 
     public String getBarrio() { return barrio; }
     public void setBarrio(String barrio) { this.barrio = barrio; }
+
+    public String getDireccionExacta() { return direccionExacta; }
+    public void setDireccionExacta(String direccionExacta) { this.direccionExacta = direccionExacta; }
 
     public String getProfesion() { return profesion; }
     public void setProfesion(String profesion) { this.profesion = profesion; }

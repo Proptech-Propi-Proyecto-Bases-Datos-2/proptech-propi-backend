@@ -3,7 +3,6 @@ package cr.ac.ucr.paraiso.proptech.propi.backend.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
@@ -27,6 +26,7 @@ public interface ClientesRepository extends JpaRepository<Clientes, Integer> {
         @Param("Canton") String canton,
         @Param("Distrito") String distrito,
         @Param("Barrio") String barrio,
+        @Param("DireccionExacta") String direccionExacta,
         @Param("Profesion") String profesion,
         @Param("ActividadEconomica") String actividadEconomica,
         @Param("CorreoElectronico") String correoElectronico,
@@ -36,21 +36,26 @@ public interface ClientesRepository extends JpaRepository<Clientes, Integer> {
     @Query(value = "{call proptech.ConsultarClientes(:estado)}", nativeQuery = true)
     List<Object[]> consultarClientesNativo(@Param("estado") String estado);
 
-    @Modifying
-    @Query(value = "{call proptech.sp_ActualizarCliente(:id, :nombre, :numIdent, :tipoIdent, :prov, :cant, :dist, :barr, :prof, :actEcon, :correo, :tel, :estado)}", nativeQuery = true)
-    void actualizarClienteSP(
-        @Param("id") Integer id,
-        @Param("nombre") String nombre,
-        @Param("numIdent") String numIdentificacion,
-        @Param("tipoIdent") String tipoIdentificacion,
-        @Param("prov") String provincia,
-        @Param("cant") String canton,
-        @Param("dist") String distrito,
-        @Param("barr") String barrio,
-        @Param("prof") String profesion,
-        @Param("actEcon") String actividadEconomica,
-        @Param("correo") String correoElectronico,
-        @Param("tel") String telefono,
-        @Param("estado") String estado
+    @Transactional
+    @Procedure(procedureName = "proptech.ActualizarCliente")
+    void actualizarCliente(
+        @Param("p_id_cliente") Integer id,
+        @Param("p_nombre") String nombre,
+        @Param("p_num_identificacion") String numIdentificacion,
+        @Param("p_tipo_identificacion") String tipoIdentificacion,
+        @Param("p_provincia") String provincia,
+        @Param("p_canton") String canton,
+        @Param("p_distrito") String distrito,
+        @Param("p_barrio") String barrio,
+        @Param("p_direccion_exacta") String direccionExacta,
+        @Param("p_profesion") String profesion,
+        @Param("p_actividad_economica") String actividadEconomica,
+        @Param("p_correo_electronico") String correoElectronico,
+        @Param("p_telefono") String telefono,
+        @Param("p_estado") String estado
     );
+
+    @Transactional
+    @Procedure(procedureName = "proptech.DesactivarCliente")
+    void desactivarCliente(@Param("id_cliente") Integer id);
 }

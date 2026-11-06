@@ -31,10 +31,6 @@ public class FacturasRestController {
         return service.save(value); 
     }
 
-    @PostMapping("/insertarFactura") public ResponseEntity<Void> insertarFactura(@RequestBody Facturas value) {
-        service.insertUsingProcedure(value); return ResponseEntity.ok().build();
-    }
-    
     @PutMapping("/{id}") public ResponseEntity<Facturas> update(@PathVariable int id, @RequestBody Facturas value) {
         Facturas updated = service.update(id, value);
         return updated == null ? ResponseEntity.notFound().build() : ResponseEntity.ok(updated);

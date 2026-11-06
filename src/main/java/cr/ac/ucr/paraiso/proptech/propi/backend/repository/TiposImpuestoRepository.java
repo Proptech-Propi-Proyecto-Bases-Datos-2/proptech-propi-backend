@@ -15,6 +15,15 @@ public interface TiposImpuestoRepository extends JpaRepository<TiposImpuesto, In
     )
     void insertTipoImpuesto(@Param("tarifa") String tarifa,
                             @Param("descripcion") String descripcion,
-                            @Param("porcentaje") java.math.BigDecimal porcentaje,
-                            @Param("estado") String estado);
+                            @Param("porcentaje") java.math.BigDecimal porcentaje);
+
+    @Transactional
+    @Procedure(procedureName = "proptech.ActualizarTipoImpuesto")
+    void actualizarTipoImpuesto(@Param("id_impuesto") int id, @Param("tarifa") String tarifa,
+                                @Param("descripcion") String descripcion,
+                                @Param("porcentaje") java.math.BigDecimal porcentaje);
+
+    @Transactional
+    @Procedure(procedureName = "proptech.DesactivarTipoImpuesto")
+    void desactivarTipoImpuesto(@Param("id_impuesto") int id);
 }

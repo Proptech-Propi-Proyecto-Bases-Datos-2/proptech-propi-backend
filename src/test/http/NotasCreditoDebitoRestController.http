@@ -17,14 +17,13 @@ Content-Type: application/json
     "idFactura": {{facturaId}}
   },
   "fecha": "2026-10-26T19:00:00",
-  "tipo": "CREDITO",
+  "tipo": "Credito",
   "motivo": "Devolución de producto",
   "montoTotal": 11300.00
 }
 
 ### Crear nota mediante procedimiento
-# El controller actual define un espacio al final de esta ruta.
-POST {{baseUrl}}/api/notas-credito-debito/insertarNota%20
+POST {{baseUrl}}/api/notas-credito-debito/insertarNota
 Content-Type: application/json
 
 {
@@ -32,7 +31,7 @@ Content-Type: application/json
     "idFactura": {{facturaId}}
   },
   "fecha": "2026-10-26T19:00:00",
-  "tipo": "DEBITO",
+  "tipo": "Debito",
   "motivo": "Ajuste de monto",
   "montoTotal": 1000.00
 }
@@ -46,10 +45,10 @@ Content-Type: application/json
     "idFactura": {{facturaId}}
   },
   "fecha": "2026-10-26T19:00:00",
-  "tipo": "CREDITO",
+  "tipo": "Credito",
   "motivo": "Motivo actualizado",
   "montoTotal": 9000.00
 }
 
-### Eliminar nota
+### Eliminar nota físicamente
 DELETE {{baseUrl}}/api/notas-credito-debito/{{notaId}}

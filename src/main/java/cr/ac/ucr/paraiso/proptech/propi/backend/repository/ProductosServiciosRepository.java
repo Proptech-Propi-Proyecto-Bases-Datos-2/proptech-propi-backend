@@ -13,10 +13,20 @@ public interface ProductosServiciosRepository extends JpaRepository<ProductosSer
         procedureName = "proptech.InsertarProductoServicio",
         outputParameterName = "IdProductoServicio"
     )
-    void insertProductoServicio(@Param("codCabys") String codCabys,
-                                @Param("idImpuesto") int idImpuesto,
+    void insertProductoServicio(@Param("cod_cabys") String codCabys,
+                                @Param("id_impuesto") int idImpuesto,
                                 @Param("descripcion") String descripcion,
-                                @Param("unidadMedida") String unidadMedida,
-                                @Param("precio") java.math.BigDecimal precio,
-                                @Param("estado") String estado);
+                                @Param("unidad_medida") String unidadMedida,
+                                @Param("precio") java.math.BigDecimal precio);
+
+    @Transactional
+    @Procedure(procedureName = "proptech.ActualizarProductoServicio")
+    void actualizarProductoServicio(@Param("id_producto") int id, @Param("cod_cabys") String codCabys,
+                                    @Param("id_impuesto") int idImpuesto, @Param("descripcion") String descripcion,
+                                    @Param("unidad_medida") String unidadMedida,
+                                    @Param("precio") java.math.BigDecimal precio);
+
+    @Transactional
+    @Procedure(procedureName = "proptech.DesactivarProductoServicio")
+    void desactivarProductoServicio(@Param("id_producto") int id);
 }

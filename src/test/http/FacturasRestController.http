@@ -27,25 +27,6 @@ Content-Type: application/json
   "montoTotal": 11300.00
 }
 
-### Crear factura mediante procedimiento
-POST {{baseUrl}}/api/facturas/insertarFactura
-Content-Type: application/json
-
-{
-  "cliente": {
-    "idCliente": {{clienteId}}
-  },
-  "fechaFactura": "2026-10-26T19:00:00",
-  "condicionVenta": "CONTADO",
-  "medioPago": "TARJETA",
-  "moneda": "CRC",
-  "tipoCambio": 1.0000,
-  "observaciones": "Factura por procedimiento",
-  "subtotal": 10000.00,
-  "totalImpuestos": 1300.00,
-  "montoTotal": 11300.00
-}
-
 ### Actualizar factura
 PUT {{baseUrl}}/api/facturas/{{facturaId}}
 Content-Type: application/json
@@ -65,5 +46,5 @@ Content-Type: application/json
   "montoTotal": 13560.00
 }
 
-### Eliminar factura
+### Eliminar factura físicamente
 DELETE {{baseUrl}}/api/facturas/{{facturaId}}

@@ -20,7 +20,7 @@ Content-Type: application/json
   "descripcion": "Servicio de prueba",
   "unidadMedida": "Unidad",
   "precio": 10000.00,
-  "estado": "ACTIVO"
+  "estado": "A"
 }
 
 ### Crear producto o servicio mediante procedimiento
@@ -35,7 +35,7 @@ Content-Type: application/json
   "descripcion": "Producto por procedimiento",
   "unidadMedida": "Unidad",
   "precio": 15000.00,
-  "estado": "ACTIVO"
+  "estado": "A"
 }
 
 ### Actualizar producto o servicio
@@ -50,8 +50,8 @@ Content-Type: application/json
   "descripcion": "Servicio actualizado",
   "unidadMedida": "Unidad",
   "precio": 12000.00,
-  "estado": "ACTIVO"
+  "estado": "A"
 }
 
-### Eliminar producto o servicio
+### Inactivar producto o servicio (borrado lógico)
 DELETE {{baseUrl}}/api/productos-servicios/{{productoId}}

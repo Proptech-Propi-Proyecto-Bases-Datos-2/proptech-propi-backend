@@ -10,12 +10,10 @@ public interface NotasCreditoDebitoRepository extends JpaRepository<NotasCredito
 
     @Transactional
     @Procedure(
-        procedureName = "proptech.InsertarNotaCreditoDebito",
-        outputParameterName = "IdNotaCreditoDebito"
+        procedureName = "proptech.CrearNota"
     )
-    void insertNota(@Param("idFactura") int idFactura,
-                    @Param("fecha") java.time.LocalDateTime fecha,
+    void insertNota(@Param("id_factura") int idFactura,
                     @Param("tipo") String tipo,
                     @Param("motivo") String motivo,
-                    @Param("montoTotal") java.math.BigDecimal montoTotal);
+                    @Param("monto_total") java.math.BigDecimal montoTotal);
 }

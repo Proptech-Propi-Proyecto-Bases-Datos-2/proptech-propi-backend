@@ -4,13 +4,14 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import cr.ac.ucr.paraiso.proptech.propi.backend.dto.ClienteDTO;
 import cr.ac.ucr.paraiso.proptech.propi.backend.entity.Clientes;
 import cr.ac.ucr.paraiso.proptech.propi.backend.repository.ClientesRepository;
+import cr.ac.ucr.paraiso.proptech.propi.backend.exception.BusinessException;
+import cr.ac.ucr.paraiso.proptech.propi.backend.exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -25,6 +26,7 @@ public class ClientesService {
 
     @Transactional
     public int insertarCliente(ClienteDTO cliente) {
+        validar(cliente);
 
         int idCliente = clienteRepository.insertClient(
                 cliente.getNombre(),
@@ -34,10 +36,14 @@ public class ClientesService {
                 cliente.getCanton(),
                 cliente.getDistrito(),
                 cliente.getBarrio(),
+                cliente.getDireccionExacta(),
                 cliente.getProfesion(),
                 cliente.getActividadEconomica(),
                 cliente.getCorreoElectronico(),
                 cliente.getTelefono());
+        if (idCliente <= 0) {
+            throw new BusinessException("La base de datos no devolvió el identificador del cliente.");
+        }
         return idCliente;
     }
 
@@ -50,7 +56,7 @@ public class ClientesService {
     }
 
     public List<ClienteDTO> obtenerClientes(String estado) {
-        // Si no se envía estado o viene vacío, se pasa null para consultar todos
+        ValidationUtils.state(estado);
         String parametroEstado = (estado != null && !estado.trim().isEmpty()) ? estado : null;
 
         // 1. Obtener la lista de objetos devuelta por el procedimiento almacenado
@@ -81,23 +87,25 @@ public class ClientesService {
             if (fila[7] != null)
                 dto.setBarrio((String) fila[7]);
             if (fila[8] != null)
-                dto.setProfesion((String) fila[8]);
+                dto.setDireccionExacta((String) fila[8]);
             if (fila[9] != null)
-                dto.setActividadEconomica((String) fila[9]);
+                dto.setProfesion((String) fila[9]);
             if (fila[10] != null)
-                dto.setCorreoElectronico((String) fila[10]);
+                dto.setActividadEconomica((String) fila[10]);
             if (fila[11] != null)
-                dto.setTelefono((String) fila[11]);
+                dto.setCorreoElectronico((String) fila[11]);
             if (fila[12] != null) {
-                if (fila[12] instanceof LocalDateTime) {
-                    dto.setFechaRegistro((LocalDateTime) fila[12]);
-                } else if (fila[12] instanceof Timestamp) {
-                    dto.setFechaRegistro(((Timestamp) fila[12]).toLocalDateTime());
+                dto.setTelefono((String) fila[12]);
+            }
+            if (fila[13] != null) {
+                if (fila[13] instanceof LocalDateTime) {
+                    dto.setFechaRegistro((LocalDateTime) fila[13]);
+                } else if (fila[13] instanceof Timestamp) {
+                    dto.setFechaRegistro(((Timestamp) fila[13]).toLocalDateTime());
                 }
             }
-            // Mapeo seguro para el campo CHAR(1) 'estado'
-            if (fila[13] != null) {
-                dto.setEstado(String.valueOf(fila[13]));
+            if (fila[14] != null) {
+                dto.setEstado(String.valueOf(fila[14]));
             }
             ;
 
@@ -108,34 +116,42 @@ public class ClientesService {
     }
 
     public ClienteDTO findById(int idCliente) {
-        // 1. Reutiliza la llamada al SP pasando null para que consulte los registros
-        List<ClienteDTO> todosLosClientes = obtenerClientes(null);
+        ValidationUtils.id(idCliente, "idCliente");
+        return obtenerClientes(null).stream()
+                .filter(c -> c.getIdCliente() == idCliente)
+                .findFirst().orElse(null);
+    }
 
-        // 2. Filtra por idCliente usando Java Stream
-        return todosLosClientes.stream()
-                .filter(c -> c.getIdCliente() != 0 && c.getIdCliente()==idCliente)
-                .findFirst()
-                .orElse(null); // Retorna null si no encuentra el ID
+    public ClienteDTO findRequiredById(int idCliente) {
+        ClienteDTO cliente = findById(idCliente);
+        if (cliente == null) {
+            throw new ResourceNotFoundException("Cliente no encontrado con el ID: " + idCliente);
+        }
+        return cliente;
     }
 
     public void deleteById(int idCliente) {
-        clienteRepository.deleteById(idCliente);
+        desactivar(idCliente);
     }
 
     public void delete(Clientes cliente) {
-        clienteRepository.delete(cliente);
+        if (cliente == null) {
+            throw new BusinessException("El cliente es obligatorio.");
+        }
+        desactivar(cliente.getIdCliente());
     }
 
     public ClienteDTO update(int id, ClienteDTO dto) {
-        // 1. Verificar si el cliente existe usando tu método findById
+        ValidationUtils.id(id, "idCliente");
+        validar(dto);
         ClienteDTO clienteExistente = findById(id);
         if (clienteExistente == null) {
-            return null; // Retorna null si el ID no se encuentra en la BD
+            throw new ResourceNotFoundException("Cliente no encontrado con el ID: " + id);
         }
 
         // 2. Ejecutar el Stored Procedure de actualización a través del repositorio
         // SQL Server se encarga de recibir los String y convertirlos a byte[] (cifrados)
-        clienteRepository.actualizarClienteSP(
+        clienteRepository.actualizarCliente(
             id,
             dto.getNombre(),
             dto.getNumIdentificacion(),
@@ -144,6 +160,7 @@ public class ClientesService {
             dto.getCanton(),
             dto.getDistrito(),
             dto.getBarrio(),
+            dto.getDireccionExacta(),
             dto.getProfesion(),
             dto.getActividadEconomica(),
             dto.getCorreoElectronico(),
@@ -151,8 +168,52 @@ public class ClientesService {
             dto.getEstado() != null ? dto.getEstado() : "A"
         );
 
-        // 3. Retornar el cliente consultado nuevamente con sus datos descifrados
         return findById(id);
+    }
+
+    public void desactivar(int id) {
+        ValidationUtils.id(id, "idCliente");
+        if (findById(id) == null) {
+            throw new ResourceNotFoundException("Cliente no encontrado con el ID: " + id);
+        }
+        clienteRepository.desactivarCliente(id);
+    }
+
+    private void validar(ClienteDTO dto) {
+        if (dto == null) throw new BusinessException("El cuerpo de la solicitud es obligatorio.");
+        ValidationUtils.required(dto.getNombre(), "nombre");
+        ValidationUtils.required(dto.getNumIdentificacion(), "numIdentificacion");
+        ValidationUtils.required(dto.getTipoIdentificacion(), "tipoIdentificacion");
+        ValidationUtils.required(dto.getProvincia(), "provincia");
+        ValidationUtils.required(dto.getCanton(), "canton");
+        ValidationUtils.required(dto.getDistrito(), "distrito");
+        ValidationUtils.required(dto.getBarrio(), "barrio");
+        if (dto.getDireccionExacta() == null || dto.getDireccionExacta().isBlank()) {
+            dto.setDireccionExacta("No especificada");
+        }
+        ValidationUtils.required(dto.getProfesion(), "profesion");
+        ValidationUtils.required(dto.getActividadEconomica(), "actividadEconomica");
+        ValidationUtils.required(dto.getCorreoElectronico(), "correoElectronico");
+        ValidationUtils.required(dto.getTelefono(), "telefono");
+        ValidationUtils.length(dto.getNombre(), "nombre", 150);
+        ValidationUtils.length(dto.getNumIdentificacion(), "numIdentificacion", 50);
+        ValidationUtils.length(dto.getTipoIdentificacion(), "tipoIdentificacion", 20);
+        ValidationUtils.length(dto.getProvincia(), "provincia", 40);
+        ValidationUtils.length(dto.getCanton(), "canton", 40);
+        ValidationUtils.length(dto.getDistrito(), "distrito", 40);
+        ValidationUtils.length(dto.getBarrio(), "barrio", 40);
+        ValidationUtils.length(dto.getDireccionExacta(), "direccionExacta", 500);
+        ValidationUtils.length(dto.getProfesion(), "profesion", 100);
+        ValidationUtils.length(dto.getActividadEconomica(), "actividadEconomica", 100);
+        ValidationUtils.length(dto.getCorreoElectronico(), "correoElectronico", 256);
+        ValidationUtils.length(dto.getTelefono(), "telefono", 20);
+        if (!dto.getCorreoElectronico().matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+            throw new BusinessException("El correoElectronico no tiene un formato válido.");
+        }
+        if (!dto.getTelefono().matches("^[0-9+()\\- ]{8,20}$")) {
+            throw new BusinessException("El telefono no tiene un formato válido.");
+        }
+        ValidationUtils.state(dto.getEstado());
     }
 
 }

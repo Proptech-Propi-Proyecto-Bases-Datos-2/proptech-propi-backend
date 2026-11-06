@@ -12,6 +12,7 @@ public class ClienteDTO {
     private String canton;
     private String distrito;
     private String barrio;
+    private String direccionExacta;
     private String profesion;
     private String actividadEconomica;
     private String correoElectronico;
@@ -24,7 +25,7 @@ public class ClienteDTO {
 
     public ClienteDTO(String nombre, String numIdentificacion, String tipoIdentificacion, String provincia,
             String canton, String distrito, String barrio, String profesion, String actividadEconomica,
-            String correoElectronico, String telefono) {
+            String direccionExacta, String correoElectronico, String telefono) {
         this.nombre = nombre;
         this.numIdentificacion = numIdentificacion;
         this.tipoIdentificacion = tipoIdentificacion;
@@ -32,10 +33,18 @@ public class ClienteDTO {
         this.canton = canton;
         this.distrito = distrito;
         this.barrio = barrio;
+        this.direccionExacta = direccionExacta;
         this.profesion = profesion;
         this.actividadEconomica = actividadEconomica;
         this.correoElectronico = correoElectronico;
         this.telefono = telefono;
+    }
+
+    public ClienteDTO(String nombre, String numIdentificacion, String tipoIdentificacion, String provincia,
+            String canton, String distrito, String barrio, String profesion, String actividadEconomica,
+            String correoElectronico, String telefono) {
+        this(nombre, numIdentificacion, tipoIdentificacion, provincia, canton, distrito, barrio,
+                profesion, actividadEconomica, "No especificada", correoElectronico, telefono);
     }
     
     public void setNombre(String nombre) {
@@ -94,6 +103,14 @@ public class ClienteDTO {
         return barrio;
     }
 
+    public void setDireccionExacta(String direccionExacta) {
+        this.direccionExacta = direccionExacta;
+    }
+
+    public String getDireccionExacta() {
+        return direccionExacta;
+    }
+
     public void setProfesion(String profesion) {
         this.profesion = profesion;
     }       
@@ -150,4 +167,3 @@ public class ClienteDTO {
         this.idCliente = idCliente;
     }
 }
-

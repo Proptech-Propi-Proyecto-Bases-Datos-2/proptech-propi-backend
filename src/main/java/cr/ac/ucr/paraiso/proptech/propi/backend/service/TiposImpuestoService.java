@@ -6,6 +6,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import cr.ac.ucr.paraiso.proptech.propi.backend.exception.BusinessException;
+import cr.ac.ucr.paraiso.proptech.propi.backend.exception.ResourceNotFoundException;
 
 @Service
 @Transactional
@@ -15,9 +17,15 @@ public class TiposImpuestoService {
     public TiposImpuestoService(TiposImpuestoRepository repository) { this.repository = repository; }
     public List<TiposImpuesto> findAll() { return repository.findAll(); }
     public TiposImpuesto findById(int id) { return repository.findById(id).orElse(null); }
-    public TiposImpuesto save(TiposImpuesto tipo) { return repository.save(tipo); }
+    public TiposImpuesto save(TiposImpuesto tipo) {
+        validar(tipo);
+        return repository.save(tipo);
+    }
     public TiposImpuesto update(int id, TiposImpuesto tipo) {
-        if (tipo.getIdImpuesto() != id || !repository.existsById(id)) return null;
+        ValidationUtils.id(id, "idImpuesto");
+        validar(tipo);
+        if (tipo.getIdImpuesto() != id) throw new BusinessException("El id de la URL no coincide con el cuerpo.");
+        if (!repository.existsById(id)) throw new ResourceNotFoundException("Tipo de impuesto no encontrado con el ID: " + id);
         
         Optional<TiposImpuesto> resultado = repository.findById(id);
 
@@ -32,13 +40,30 @@ public class TiposImpuestoService {
         tipoEncontrado.setPorcentaje(tipo.getPorcentaje());
         tipoEncontrado.setEstado(tipo.getEstado());
 
-        return repository.save(tipoEncontrado);
+        repository.actualizarTipoImpuesto(id, tipo.getTarifa(), tipo.getDescripcion(), tipo.getPorcentaje());
+        return findById(id);
     }
 
-    public void deleteById(int id) { repository.deleteById(id); }
+    public void deleteById(int id) {
+        ValidationUtils.id(id, "idImpuesto");
+        if (!repository.existsById(id)) throw new ResourceNotFoundException("Tipo de impuesto no encontrado con el ID: " + id);
+        repository.desactivarTipoImpuesto(id);
+    }
     
     public void insertUsingProcedure(TiposImpuesto tipo) {
-        repository.insertTipoImpuesto(tipo.getTarifa(), tipo.getDescripcion(),
-                tipo.getPorcentaje(), tipo.getEstado() == null ? "A" : tipo.getEstado());
+        validar(tipo);
+        repository.insertTipoImpuesto(tipo.getTarifa(), tipo.getDescripcion(), tipo.getPorcentaje());
+    }
+
+    private void validar(TiposImpuesto tipo) {
+        if (tipo == null) throw new BusinessException("El cuerpo de la solicitud es obligatorio.");
+        ValidationUtils.required(tipo.getTarifa(), "tarifa");
+        ValidationUtils.length(tipo.getTarifa(), "tarifa", 10);
+        ValidationUtils.length(tipo.getDescripcion(), "descripcion", 100);
+        if (tipo.getPorcentaje() == null || tipo.getPorcentaje().signum() < 0
+                || tipo.getPorcentaje().compareTo(new java.math.BigDecimal("100")) > 0) {
+            throw new BusinessException("El porcentaje debe estar entre 0 y 100.");
+        }
+        ValidationUtils.state(tipo.getEstado());
     }
 }

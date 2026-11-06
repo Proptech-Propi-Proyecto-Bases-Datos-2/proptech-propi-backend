@@ -24,21 +24,6 @@ Content-Type: application/json
   "montoLinea": 22600.00
 }
 
-### Crear detalle mediante procedimiento
-POST {{baseUrl}}/api/facturas-detalle/insertarFacturaDetalle
-Content-Type: application/json
-
-{
-  "factura": {
-    "idFactura": {{facturaId}}
-  },
-  "productoServicio": {
-    "idProducto": {{productoId}}
-  },
-  "cantidad": 1,
-  "montoLinea": 11300.00
-}
-
 ### Actualizar detalle
 PUT {{baseUrl}}/api/facturas-detalle/{{detalleId}}
 Content-Type: application/json
@@ -54,5 +39,5 @@ Content-Type: application/json
   "montoLinea": 33900.00
 }
 
-### Eliminar detalle
+### Eliminar detalle físicamente
 DELETE {{baseUrl}}/api/facturas-detalle/{{detalleId}}

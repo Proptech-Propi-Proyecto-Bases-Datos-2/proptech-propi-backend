@@ -32,7 +32,7 @@ public class NotasCreditoDebitoRestController {
         return service.save(value); 
     }
 
-    @PostMapping("/insertarNota ") 
+    @PostMapping("/insertarNota")
     public ResponseEntity<Void> insertarNota(@RequestBody NotasCreditoDebito value) {
         service.insertUsingProcedure(value); return ResponseEntity.ok().build();
     }

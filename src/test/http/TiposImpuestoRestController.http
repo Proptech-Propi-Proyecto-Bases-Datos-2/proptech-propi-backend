@@ -15,7 +15,7 @@ Content-Type: application/json
   "tarifa": "13",
   "descripcion": "Impuesto al valor agregado",
   "porcentaje": 13.00,
-  "estado": "ACTIVO"
+  "estado": "A"
 }
 
 ### Crear tipo de impuesto mediante procedimiento
@@ -26,7 +26,7 @@ Content-Type: application/json
   "tarifa": "4",
   "descripcion": "Tarifa reducida",
   "porcentaje": 4.00,
-  "estado": "ACTIVO"
+  "estado": "A"
 }
 
 ### Actualizar tipo de impuesto
@@ -37,8 +37,8 @@ Content-Type: application/json
   "tarifa": "13",
   "descripcion": "IVA actualizado",
   "porcentaje": 13.00,
-  "estado": "ACTIVO"
+  "estado": "A"
 }
 
-### Eliminar tipo de impuesto
+### Inactivar tipo de impuesto (borrado lógico)
 DELETE {{baseUrl}}/api/tipos-impuestos/{{impuestoId}}
