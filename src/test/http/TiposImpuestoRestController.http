@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:8084/proptech-propi
-@impuestoId = 1
+@impuestoId = 1002
 
 ### Listar tipos de impuesto
 GET {{baseUrl}}/api/tipos-impuestos
@@ -12,9 +12,9 @@ POST {{baseUrl}}/api/tipos-impuestos
 Content-Type: application/json
 
 {
-  "tarifa": "13",
+  "tarifa": "130",
   "descripcion": "Impuesto al valor agregado",
-  "porcentaje": 13.00,
+  "porcentaje": 93.00,
   "estado": "A"
 }
 
@@ -23,7 +23,7 @@ POST {{baseUrl}}/api/tipos-impuestos/insertarTipo
 Content-Type: application/json
 
 {
-  "tarifa": "4",
+  "tarifa": "17",
   "descripcion": "Tarifa reducida",
   "porcentaje": 4.00,
   "estado": "A"
@@ -34,10 +34,11 @@ PUT {{baseUrl}}/api/tipos-impuestos/{{impuestoId}}
 Content-Type: application/json
 
 {
-  "tarifa": "13",
-  "descripcion": "IVA actualizado",
-  "porcentaje": 13.00,
-  "estado": "A"
+  "idImpuesto": 1002,
+  "tarifa": "18",
+  "descripcion": "IVA",
+  "porcentaje": 1.00,
+  "estado": "I"
 }
 
 ### Inactivar tipo de impuesto (borrado lógico)

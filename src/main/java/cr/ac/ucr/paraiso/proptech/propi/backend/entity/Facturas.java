@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "Facturas", schema = "proptech")
 public class Facturas {
@@ -17,6 +19,7 @@ public class Facturas {
 
     @ManyToOne(fetch = FetchType.LAZY)//revisar si falta
     @JoinColumn(name = "id_cliente", nullable = false)
+    @JsonIgnoreProperties({"facturas", "hibernateLazyInitializer", "handler"})
     private Clientes cliente;
 
     @Column(name = "fecha_factura")

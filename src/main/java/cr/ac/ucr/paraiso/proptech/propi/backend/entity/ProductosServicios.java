@@ -6,8 +6,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name = "ProductosServicios", schema = "proptech")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ProductosServicios {
 
     @Id
@@ -34,6 +38,7 @@ public class ProductosServicios {
     @Column(name = "estado")
     private String estado;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "productoServicio")
     private List<FacturasDetalle> detalles = new ArrayList<>();
 

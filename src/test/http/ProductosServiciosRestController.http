@@ -43,6 +43,7 @@ PUT {{baseUrl}}/api/productos-servicios/{{productoId}}
 Content-Type: application/json
 
 {
+  "idProducto": "1",
   "codCabys": "1234567890123",
   "tipoImpuesto": {
     "idImpuesto": {{impuestoId}}

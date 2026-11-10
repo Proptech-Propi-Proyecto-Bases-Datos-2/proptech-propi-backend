@@ -3,6 +3,9 @@ package cr.ac.ucr.paraiso.proptech.propi.backend.entity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "FacturasDetalle", schema = "proptech")
 public class FacturasDetalle {
@@ -14,6 +17,7 @@ public class FacturasDetalle {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_factura", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)   // la recibe, pero no la devuelve
     private Facturas factura;
 
     @ManyToOne(fetch = FetchType.LAZY)

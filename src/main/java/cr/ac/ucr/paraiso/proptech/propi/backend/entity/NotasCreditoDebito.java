@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "NotasCreditoDebito", schema = "proptech")
 public class NotasCreditoDebito {
@@ -15,6 +18,7 @@ public class NotasCreditoDebito {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_factura", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)   // la recibe, pero no la devuelve
     private Facturas factura;
 
     @Column(name = "fecha")
