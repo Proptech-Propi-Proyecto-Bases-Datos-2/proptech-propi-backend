@@ -24,6 +24,15 @@ public class FacturasDetalleService {
         validar(facturaDetalle);
         return repository.save(facturaDetalle);
     }
+
+    public void insertUsingProcedure(FacturasDetalle facturaDetalle) {
+        validar(facturaDetalle);
+        repository.insertFacturaDetalle(
+                facturaDetalle.getFactura().getIdFactura(),
+                facturaDetalle.getProductoServicio().getIdProducto(),
+                facturaDetalle.getCantidad(),
+                facturaDetalle.getMontoLinea());
+    }
     
     public FacturasDetalle update(int id, FacturasDetalle facturaDetalle) {
         ValidationUtils.id(id, "idDetalle");

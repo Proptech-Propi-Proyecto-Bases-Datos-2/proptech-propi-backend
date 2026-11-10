@@ -31,6 +31,12 @@ public class FacturasDetalleRestController {
         return service.save(value); 
     }
 
+    @PostMapping("/insertarDetalle")
+    public ResponseEntity<Void> insertarDetalle(@RequestBody FacturasDetalle value) {
+        service.insertUsingProcedure(value);
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping("/{id}") 
     public ResponseEntity<FacturasDetalle> update(@PathVariable int id, @RequestBody FacturasDetalle value) {
         FacturasDetalle updated = service.update(id, value);

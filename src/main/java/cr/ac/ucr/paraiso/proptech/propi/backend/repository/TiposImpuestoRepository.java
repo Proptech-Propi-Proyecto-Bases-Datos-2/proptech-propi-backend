@@ -9,10 +9,7 @@ import org.springframework.data.repository.query.Param;
 public interface TiposImpuestoRepository extends JpaRepository<TiposImpuesto, Integer> {
 
     @Transactional
-    @Procedure(
-        procedureName = "proptech.InsertarTipoImpuesto",
-        outputParameterName = "IdTipoImpuesto"
-    )
+    @Procedure(procedureName = "proptech.InsertarTipoImpuesto")
     void insertTipoImpuesto(@Param("tarifa") String tarifa,
                             @Param("descripcion") String descripcion,
                             @Param("porcentaje") java.math.BigDecimal porcentaje);

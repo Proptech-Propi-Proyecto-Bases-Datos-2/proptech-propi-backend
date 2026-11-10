@@ -27,6 +27,21 @@ public class FacturasService {
         validar(factura);
         return repository.save(factura);
     }
+
+    public int insertUsingProcedure(Facturas factura) {
+        validar(factura);
+        return repository.insertFactura(
+                factura.getCliente().getIdCliente(),
+                factura.getCondicionVenta(),
+                factura.getMedioPago(),
+                factura.getMoneda(),
+                factura.getTipoCambio(),
+                factura.getObservaciones(),
+                factura.getSubtotal(),
+                factura.getTotalImpuestos(),
+                factura.getMontoTotal());
+    }
+
     public Facturas update(int id, Facturas factura) {
         ValidationUtils.id(id, "idFactura");
         validar(factura);

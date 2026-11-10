@@ -9,10 +9,7 @@ import org.springframework.data.repository.query.Param;
 public interface ProductosServiciosRepository extends JpaRepository<ProductosServicios, Integer> {
 
     @Transactional
-    @Procedure(
-        procedureName = "proptech.InsertarProductoServicio",
-        outputParameterName = "IdProductoServicio"
-    )
+    @Procedure(procedureName = "proptech.InsertarProductoServicio")
     void insertProductoServicio(@Param("cod_cabys") String codCabys,
                                 @Param("id_impuesto") int idImpuesto,
                                 @Param("descripcion") String descripcion,

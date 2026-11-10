@@ -5,6 +5,7 @@ import cr.ac.ucr.paraiso.proptech.propi.backend.service.FacturasService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/facturas")
@@ -29,6 +30,14 @@ public class FacturasRestController {
     @PostMapping 
     public Facturas save(@RequestBody Facturas value) { 
         return service.save(value); 
+    }
+
+    @PostMapping("/insertarFactura")
+    public ResponseEntity<Map<String, Object>> insertarFactura(@RequestBody Facturas value) {
+        int id = service.insertUsingProcedure(value);
+        return ResponseEntity.ok(Map.of(
+                "mensaje", "Factura insertada correctamente",
+                "idFactura", id));
     }
 
     @PutMapping("/{id}") public ResponseEntity<Facturas> update(@PathVariable int id, @RequestBody Facturas value) {
