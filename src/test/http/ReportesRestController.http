@@ -1,0 +1,27 @@
+@baseUrl = http://localhost:8084/proptech-propi
+@desde = 2026-01-01
+@hasta = 2026-12-31
+
+### Reporte de clientes resumido (estado: A, I o T)
+GET {{baseUrl}}/api/reportes/clientes?desde={{desde}}&hasta={{hasta}}&estado=T
+
+### Reporte de clientes solo activos
+GET {{baseUrl}}/api/reportes/clientes?desde={{desde}}&hasta={{hasta}}&estado=A
+
+### Reporte de facturas
+GET {{baseUrl}}/api/reportes/facturas?desde={{desde}}&hasta={{hasta}}
+
+### Reporte de pistas de auditoría (todos los usuarios)
+GET {{baseUrl}}/api/reportes/auditoria?desde={{desde}}&hasta={{hasta}}
+
+### Reporte de pistas de auditoría de un login específico
+GET {{baseUrl}}/api/reportes/auditoria?desde={{desde}}&hasta={{hasta}}&usuario=login_admin
+
+### Reporte de configuración de seguridad (todos los usuarios)
+GET {{baseUrl}}/api/reportes/seguridad
+
+### Reporte de configuración de seguridad de un usuario de base de datos
+GET {{baseUrl}}/api/reportes/seguridad?usuario=user_digitador
+
+### Error esperado: fecha desde mayor que fecha hasta
+GET {{baseUrl}}/api/reportes/facturas?desde=2026-12-31&hasta=2026-01-01

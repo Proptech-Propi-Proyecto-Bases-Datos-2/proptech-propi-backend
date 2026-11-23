@@ -390,6 +390,17 @@ URL base: `http://localhost:8084/proptech-propi`
 }
 ```
 
+### Reportes (REQ 007)
+
+Cada endpoint ejecuta su procedimiento almacenado. Las fechas van en formato `yyyy-MM-dd`.
+
+| Método | Endpoint | Procedimiento | Filtros |
+|---|---|---|---|
+| GET | `/api/reportes/clientes` | `ReporteClientesResumido` | `desde`, `hasta`, `estado` (`A`, `I` o `T`) |
+| GET | `/api/reportes/facturas` | `ReporteFacturas` | `desde`, `hasta` |
+| GET | `/api/reportes/auditoria` | `ReportePistasAuditoria` | `desde`, `hasta`, `usuario` (login; vacío = todos) |
+| GET | `/api/reportes/seguridad` | `ReporteConfiguracionSeguridad` | `usuario` (usuario de BD; vacío = todos) |
+
 ---
 
 ## Pruebas con archivos .http
@@ -405,6 +416,7 @@ En `src/test/http` hay un archivo `.http` por cada controlador, con peticiones d
 | `FacturasRestController.http` | CRUD de facturas |
 | `FacturasDetalleRestController.http` | CRUD de detalles de factura |
 | `NotasCreditoDebitoRestController.http` | CRUD de notas de crédito y débito |
+| `ReportesRestController.http` | Los 4 reportes con distintos filtros |
 
 **Cómo usarlos:**
 
