@@ -5,8 +5,8 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: application/json
 
 {
-  "username": "",
-  "password": ""
+  "username": "login_admin",
+  "password": "Admin8071Pass$word123"
 }
 
 ### Iniciar sesión digitador
@@ -14,8 +14,8 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: application/json
 
 {
-  "username": "",
-  "password": ""
+  "username": "login_digitador",
+  "password": "DigiI@tadorPassword123"
 }
 
 ### Iniciar sesión consulta
@@ -23,6 +23,14 @@ POST {{baseUrl}}/api/auth/login
 Content-Type: application/json
 
 {
-  "username": "",
-  "password": ""
+  "username": "login_consulta",
+  "password": "ConsUltaPas$w0rd123"
 }
+
+### Cerrar sesión (pegar el "token" que devolvió el login)
+POST {{baseUrl}}/api/auth/logout
+Authorization: Bearer PEGAR_TOKEN_AQUI
+
+### Probar permisos: con el token de login_consulta debe dar 403
+GET {{baseUrl}}/api/clientes
+Authorization: Bearer PEGAR_TOKEN_AQUI
