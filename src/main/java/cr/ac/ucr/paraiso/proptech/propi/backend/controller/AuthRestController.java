@@ -1,5 +1,7 @@
 package cr.ac.ucr.paraiso.proptech.propi.backend.controller;
 
+import cr.ac.ucr.paraiso.proptech.propi.backend.security.Sesion;
+import cr.ac.ucr.paraiso.proptech.propi.backend.security.SesionService;
 import cr.ac.ucr.paraiso.proptech.propi.backend.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -15,9 +17,11 @@ import java.util.Map;
 public class AuthRestController {
 
     private final AuthService authService;
+    private final SesionService sesionService;
 
-    public AuthRestController(AuthService authService) {
+    public AuthRestController(AuthService authService, SesionService sesionService) {
         this.authService = authService;
+        this.sesionService = sesionService;
     }
 
     @PostMapping("/login")
@@ -30,33 +34,35 @@ public class AuthRestController {
             clientIp = request.getRemoteAddr();
         }
 
-        Integer idBitacora = authService.autenticarEnBD(username, password, clientIp);
+        Sesion sesion = authService.autenticarEnBD(username, password, clientIp);
 
-        if (idBitacora != null) {
-            return ResponseEntity.ok(Map.of(
-                "mensaje", "Autenticación exitosa",
-                "username", username,
-                "idBitacora", idBitacora
-            ));
-        } else {
+        if (sesion == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Usuario o contraseña incorrectos en SQL Server");
         }
+
+        String token = sesionService.crear(sesion);
+        return ResponseEntity.ok(Map.of(
+                "mensaje", "Autenticación exitosa",
+                "username", sesion.username(),
+                "rol", sesion.rol(),
+                "idBitacora", sesion.idBitacora(),
+                "token", token
+        ));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestBody Map<String, Object> body) {
-        Integer idBitacora = (Integer) body.get("idBitacora");
-        String username = (String) body.get("username");
-        String password = (String) body.get("password");
-
-        boolean exito = authService.registrarSalidaBitacora(idBitacora, username, password);
-
-        if (exito) {
-            return ResponseEntity.ok(Map.of("mensaje", "Cierre de sesión registrado correctamente"));
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("No se pudo actualizar la fecha de salida en la bitácora");
+    public ResponseEntity<?> logout(@RequestHeader(value = "Authorization", required = false) String authorization) {
+        Sesion sesion = sesionService.eliminar(SesionService.extraerToken(authorization));
+        if (sesion == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "La sesión no existe o ya expiró."));
         }
+
+        if (authService.registrarSalidaBitacora(sesion.idBitacora())) {
+            return ResponseEntity.ok(Map.of("mensaje", "Cierre de sesión registrado correctamente"));
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("error", "No se pudo actualizar la fecha de salida en la bitácora"));
     }
 }
